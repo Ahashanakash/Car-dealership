@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
 {% load static %}
 {% block title %}Home | Car Dealership{% endblock %}
 
@@ -60,8 +61,7 @@
 
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiffy-slider@1.6.0/dist/css/swiffy-slider.min.css">
-<script src="https://cdn.jsdelivr.net/npm/swiffy-slider@1.6.0/dist/js/swiffy-slider.min.js" defer></script>
+
 
 <section class="vehicle-section">
 
@@ -73,7 +73,8 @@
         </a>
         {% endfor %}
     </div>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiffy-slider@1.6.0/dist/css/swiffy-slider.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/swiffy-slider@1.6.0/dist/js/swiffy-slider.min.js" defer></script>
 
     <!-- 🔸 Swiper/Slider -->
     <div class="swiffy-slider slider-item-show2 slider-nav-round slider-nav-dark slider-nav-visible slider-item-gap">
@@ -133,6 +134,82 @@
 
 </section>
 
+<!-- review section  -->
+
+<section class="review-section">
+
+  <h2 class="section-title">What Our Customers Say</h2>
+
+  <div class="review-slider-wrapper">
+
+    <div class="swiffy-slider 
+      slider-item-show3 
+      slider-item-gap 
+      slider-nav-autoplay 
+      slider-nav-autoplay-interval-8000 
+      slider-nav-autopause">
+
+      <ul class="slider-container">
+
+        {% for review in reviews %}
+        <li>
+          <div class="review-card">
+
+            <!-- USER -->
+            <div class="user-info">
+              <div class="avatar">
+                {% if review.user.profile.photo %}
+                  <img src="{{ review.user.profile.photo.url }}" alt="user">
+                {% else %}
+                  <img src="{% static 'default.webp' %}" alt="user">
+                {% endif %}
+              </div>
+
+              <h5>{{ review.user.username }}</h5>
+              <small>{{ review.created_at|timesince }} ago</small>
+            </div>
+
+            <!-- RATING -->
+            <div class="rating">
+              {% for i in "12345" %}
+                {% if forloop.counter <= review.rating %}
+                  ★
+                {% else %}
+                  ☆
+                {% endif %}
+              {% endfor %}
+            </div>
+
+            <!-- TEXT -->
+            <div class="review-body">
+              {{ review.body }}
+            </div>
+
+          </div>
+        </li>
+        {% endfor %}
+
+      </ul>
+
+      <!-- NAV BUTTONS -->
+      <button type="button" class="slider-nav"></button>
+      <button type="button" class="slider-nav slider-nav-next"></button>
+
+    </div>
+
+  </div>
+
+</section>
 
 
+<!-- JS FOR CUSTOM BUTTONS -->
+<script>
+    document.querySelector('.prev').addEventListener('click', () => {
+        document.querySelector('.review-slider .slider-nav').click();
+    });
+
+    document.querySelector('.next').addEventListener('click', () => {
+        document.querySelector('.review-slider .slider-nav-next').click();
+    });
+</script>
 {% endblock %}
