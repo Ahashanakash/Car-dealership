@@ -1,0 +1,6 @@
+<h5>Add Video for {{ car.brand }} {{ car.car_model }}</h5>
+<form method="post" enctype="multipart/form-data" hx-post="{% url 'seller:add-video' car.id %}" hx-target="#sellerContent" hx-swap="innerHTML">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-success">Add Video</button>
+</form>

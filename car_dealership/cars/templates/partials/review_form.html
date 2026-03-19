@@ -1,0 +1,23 @@
+<form hx-post="{% url 'review:review-save' car.id %}"
+      hx-target=".review-section"
+      hx-swap="outerHTML"
+      hx-on::after-swap="this.closest('.modal').remove()">
+      
+
+{% csrf_token %}
+
+<div class="mb-3">
+<label>Rating</label>
+{{ form.rating }}
+</div>
+
+<div class="mb-3">
+<label>Review</label>
+{{ form.body }}
+</div>
+
+<button type="submit" class="btn btn-success">
+Submit
+</button>
+
+</form>

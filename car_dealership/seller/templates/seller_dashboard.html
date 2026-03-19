@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+<div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3">
+        <div class="list-group" id="sellerSidebar">
+            <button class="list-group-item list-group-item-action" 
+                    hx-get="{% url 'seller:add-car' %}" 
+                    hx-target="#sellerContent" hx-swap="innerHTML">Add a Car</button>
+            <button class="list-group-item list-group-item-action" 
+                    hx-get="{% url 'seller:your-cars' %}" 
+                    hx-target="#sellerContent" hx-swap="innerHTML">Your Cars</button>
+            <button class="list-group-item list-group-item-action">Analytics</button>
+            <button class="list-group-item list-group-item-action">Price Predictions</button>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="col-md-9" id="sellerContent">
+        <p class="text-center text-muted">Select an option from the sidebar</p>
+    </div>
+</div>
+{% endblock %}

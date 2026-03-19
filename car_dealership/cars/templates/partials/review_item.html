@@ -1,0 +1,19 @@
+<div class="card mb-2">
+
+<div class="card-body">
+
+<strong>{{ review.user.username }}</strong>
+
+<div>
+{{ review.get_rating_display }}
+</div>
+
+<p>{{ review.body }}</p>
+
+<small class="text-muted">
+{{ review.created_at }}
+</small>
+
+</div>
+
+</div>

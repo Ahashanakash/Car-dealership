@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+
+<div class="container mt-4">
+    <h2>Find Nearest Showroom</h2>
+    <div id="map" style="height:500px;"></div>
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+<script>
+    // Initialize map at default location (Chattogram)
+    var map = L.map('map').setView([22.3569, 91.7832], 12);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    var shops = JSON.parse('{{ shops_json|escapejs }}');
+    var routingControl;
+
+    // Function to open Google Maps navigation
+    function navigate(lat, lng) {
+        window.open(
+            `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`,
+            "_blank"
+        );
+    }
+
+    // Function to show all shops as markers
+    function showAllShops() {
+        shops.forEach(function(shop) {
+            L.marker([shop.lat, shop.lng])
+                .addTo(map)
+                .bindPopup(`
+<b>${shop.name}</b><br>
+<button onclick="navigate(${shop.lat},${shop.lng})">Navigate</button>
+`);
+        });
+    }
+
+    // Show all shops immediately (optional fallback)
+    showAllShops();
+
+    // Try to get user location
+    map.locate({setView:true, maxZoom:14});
+
+    map.on('locationfound', function(e) {
+
+        var userLat = e.latlng.lat;
+        var userLng = e.latlng.lng;
+
+        // Show user location
+        L.marker([userLat, userLng])
+            .addTo(map)
+            .bindPopup("You are here")
+            .openPopup();
+
+        // Find nearest shop
+        var nearestShop = null;
+        var minDistance = Infinity;
+
+        shops.forEach(function(shop) {
+
+            var distance = map.distance([userLat, userLng], [shop.lat, shop.lng]);
+            var distanceKm = (distance / 1000).toFixed(2);
+
+            // Update marker popup to show distance
+            var popupContent = `
+<b>${shop.name}</b><br>
+Distance: ${distanceKm} km<br>
+<button onclick="navigate(${shop.lat},${shop.lng})">Navigate</button>
+`;
+
+            // Replace existing marker with updated popup
+            L.marker([shop.lat, shop.lng])
+                .addTo(map)
+                .bindPopup(popupContent);
+
+            // Check for nearest shop
+            if(distance < minDistance) {
+                minDistance = distance;
+                nearestShop = shop;
+            }
+        });
+
+        // Draw route to nearest shop
+        if(nearestShop) {
+            if(routingControl) {
+                map.removeControl(routingControl);
+            }
+            routingControl = L.Routing.control({
+                waypoints:[
+                    L.latLng(userLat, userLng),
+                    L.latLng(nearestShop.lat, nearestShop.lng)
+                ],
+                routeWhileDragging: false
+            }).addTo(map);
+        }
+
+    });
+
+    
+
+</script>
+
+{% endblock %}

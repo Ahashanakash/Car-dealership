@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load embed_video_tags %}
+{% block title %}{{ car.brand.name }} {{ car.car_model }} | Car Details{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg">
+                <div class="row g-0">
+                    <div class="col-md-5 d-flex flex-column align-items-center justify-content-center p-3">
+                        {% if car.image %}
+                        <img src="{{ car.image.url }}" class="img-fluid rounded mb-3"
+                            alt="{{ car.brand.name }} {{ car.car_model }}"
+                            style="max-height: 250px; object-fit: contain;">
+                        {% endif %}
+                        {% if car.brand.logo %}
+                        <img src="{{ car.brand.logo.url }}" class="img-fluid mb-2" alt="{{ car.brand.name }} logo"
+                            style="max-height: 60px; object-fit: contain;">
+                        {% endif %}
+                        {% if car_video %}
+                        <div class="mt-2">
+                            {% video car_video '260x180' %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-7">
+                        <div class="card-body">
+                            <h2 class="card-title">{{ car.brand.name }} {{ car.car_model }}</h2>
+                            <h4 class="text-success mb-3">${{ car.price }}</h4>
+                            {% include "partials/like_section.html" %}
+                            <button hx-post="{% url 'add_to_cart' car.id %}" hx-target="#cart-badge" hx-swap="outerHTML"
+                                class="btn btn-warning">
+
+                                Add to Cart
+                            </button>
+                            <ul class="list-group list-group-flush mb-3">
+                                <li class="list-group-item"><strong>Year:</strong> {{ car.year }}</li>
+                                <li class="list-group-item"><strong>Mileage:</strong> {{ car.mileage }} km</li>
+                                <li class="list-group-item"><strong>Fuel Type:</strong> {{ car.fuel_type }}</li>
+                                <li class="list-group-item"><strong>Transmission:</strong> {{ car.transmission }}</li>
+                                <li class="list-group-item"><strong>Color:</strong> {{ car.color }}</li>
+                                <li class="list-group-item"><strong>Horsepower:</strong> {{ car.horsepower }}</li>
+                                <li class="list-group-item"><strong>Top Speed:</strong> {{ car.top_speed }}</li>
+                                <li class="list-group-item"><strong>Serial Number:</strong> {{ car.serial_number }}</li>
+                                <li class="list-group-item"><strong>Seller:</strong> {{ car.seller.username }}</li>
+                                <li class="list-group-item"><strong>Status:</strong> {% if car.is_sold %}<span
+                                        class="badge bg-danger">Sold</span>{% else %}<span
+                                        class="badge bg-success">Available</span>{% endif %}</li>
+                            </ul>
+                            <p class="card-text">{{ car.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reviews Section -->
+            <div class="review-section" style="margin-top: 40px;" hx-get="{% url 'review:review-list' car.id %}"
+                hx-trigger="load" hx-target="this" hx-swap="outerHTML" hx-indicator="#initial-loading">
+                <!-- Reviews will be loaded here -->
+                <div id="initial-loading" style="text-align: center; padding: 40px;">
+                    <span>Loading reviews...</span>
+                </div>
+            </div>
+            <div id="review-modal"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

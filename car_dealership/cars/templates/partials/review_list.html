@@ -1,0 +1,36 @@
+<div class="review-section">
+
+<h4>Reviews</h4>
+
+{% if user.is_authenticated %}
+<button class="btn btn-primary mb-3"
+        hx-get="{% url 'review:review-modal' car.id %}"
+        hx-target="#modal-container"
+        hx-swap="innerHTML">
+
+{% if user_review %}
+Update Review
+{% else %}
+Give Review
+{% endif %}
+
+</button>
+{% endif %}
+
+<div id="review-list">
+
+{% for review in reviews %}
+
+{% include "partials/review_item.html" %}
+
+{% empty %}
+
+<p>No reviews yet.</p>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+<div id="modal-container"></div>

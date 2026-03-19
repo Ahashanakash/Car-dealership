@@ -1,0 +1,48 @@
+{% for car in cars %}
+<div class="card mb-3" id="car-{{ car.id }}">
+    <div class="row g-0 align-items-center">
+        <!-- Car Image -->
+        <div class="col-md-3 text-center p-2">
+            {% if car.image %}
+            <img src="{{ car.image.url }}" alt="{{ car.car_model }}"
+                 class="img-fluid rounded" style="max-height:100px; object-fit:contain;">
+            {% endif %}
+        </div>
+
+        <!-- Car Info -->
+        <div class="col-md-6">
+            <div class="card-body">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    {% if car.brand.logo %}
+                    <img src="{{ car.brand.logo.url }}" alt="{{ car.brand.name }} Logo"
+                         style="max-height:30px; object-fit:contain;">
+                    {% endif %}
+                    <h5 class="card-title mb-0">{{ car.brand.name }} {{ car.car_model }}</h5>
+                </div>
+                <p class="mb-0 text-success fw-bold">${{ car.price }}</p>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="col-md-3 text-end p-2">
+            <button class="btn btn-sm btn-primary mb-1 w-100"
+                    hx-get="{% url 'seller:update-car' car.id %}"
+                    hx-target="#sellerContent" hx-swap="innerHTML">
+                Edit
+            </button>
+            <button class="btn btn-sm btn-danger mb-1 w-100"
+                    hx-delete="{% url 'seller:delete-car' car.id %}"
+                    hx-target="#car-{{ car.id }}" hx-swap="outerHTML">
+                Delete
+            </button>
+            <button class="btn btn-sm btn-info w-100"
+                    hx-get="{% url 'seller:add-video' car.id %}"
+                    hx-target="#sellerContent" hx-swap="innerHTML">
+                Add Video
+            </button>
+        </div>
+    </div>
+</div>
+{% empty %}
+<p>No cars added yet.</p>
+{% endfor %}

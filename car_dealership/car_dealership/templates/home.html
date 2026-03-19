@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home | Car Dealership{% endblock %}
+
+{% block body %}
+{% if messages %}
+<div class="container mt-3">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" role="alert">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+
+<!-- banner casousel -->
+<div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
+            aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
+            aria-label="Slide 2"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <div class="media-wrapper">
+                <video class="d-block w-100" autoplay muted loop>
+                    <source src="{% static 'banner/v1.mp4' %}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Welcome to Car Dealership System</h5>
+                <p>Here you can buy your favourite car</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="media-wrapper">
+                <video class="d-block w-100" autoplay muted loop>
+                    <source src="{% static 'banner/v2.mp4' %}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="carousel-caption d-none d-md-block">
+                <h5>AI price analysis</h5>
+                <p>You can see the prices if it's high, low or fair</p>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiffy-slider@1.6.0/dist/css/swiffy-slider.min.css">
+<script src="https://cdn.jsdelivr.net/npm/swiffy-slider@1.6.0/dist/js/swiffy-slider.min.js" defer></script>
+
+<section class="vehicle-section">
+
+    <!-- 🔸 Categories (Dynamic Tabs) -->
+    <div class="tabs">
+        {% for cat in categories %}
+        <a href="{% url 'category_wise_car' cat %}" class="{% if request.GET.category == cat %}active{% endif %}">
+            {{ cat|title }}
+        </a>
+        {% endfor %}
+    </div>
+
+
+    <!-- 🔸 Swiper/Slider -->
+    <div class="swiffy-slider slider-item-show2 slider-nav-round slider-nav-dark slider-nav-visible slider-item-gap">
+
+        <ul class="slider-container">
+
+            {% for car in data %}
+            <li>
+                <div class="vehicle-card">
+
+                    <!-- Image -->
+                    <div class="image">
+                        <span class="badge">{{ car.category }}</span>
+                        <img src="{{ car.image.url }}" alt="{{ car.Car_name }}">
+                        <p class="bottom-text">
+                            Price: {{ car.price }}
+                        </p>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="content">
+                        <p class="year">{{ car.year|default:"2026" }}</p>
+
+                        <div class="brand-row ">
+                            <img src="{{ car.brand.logo.url }}" class="rounded-2" alt="{{ car.brand.name }}">
+                            <h2>{{ car.car_model }}</h2>
+                        </div>
+
+                        <div class="info">
+                            <div>
+                                <h4>${{ car.price }}</h4>
+                                <p>Starting Price</p>
+                            </div>
+                            <div>
+                                <h4>{{ car.mileage|default:"--" }}</h4>
+                                <p>Mileage</p>
+                            </div>
+                        </div>
+
+                        <div class="actions">
+                            <a href="{% url 'car_details' car.id %}" class="btn-primary">Explore</a>
+                            <a href="#">Build →</a>
+                        </div>
+                    </div>
+
+                </div>
+            </li>
+            {% endfor %}
+
+        </ul>
+
+        <!-- Navigation -->
+        <button type="button" class="slider-nav"></button>
+        <button type="button" class="slider-nav slider-nav-next"></button>
+
+    </div>
+
+</section>
+
+
+
+{% endblock %}

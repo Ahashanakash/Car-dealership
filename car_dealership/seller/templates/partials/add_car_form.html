@@ -1,0 +1,5 @@
+<form method="post" enctype="multipart/form-data" hx-post="{% url 'seller:add-car' %}" hx-target="#sellerContent" hx-swap="innerHTML">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-success">Add Car</button>
+</form>

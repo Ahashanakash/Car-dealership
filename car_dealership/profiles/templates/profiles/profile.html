@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block body %}
+<style>
+    html {
+        scroll-behavior: smooth;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="row">
+
+        <!-- LEFT SIDEBAR -->
+        <div class="col-md-3">
+            <div class="list-group sticky-top">
+                {% if request.user.profile.photo %}
+                <img src="{{ request.user.profile.photo.url }}" class="img-fluid rounded-circle shadow"
+                    style="width:150px; height:150px; object-fit:cover;">
+                {% else %}
+                <img src="https://img.freepik.com/free-vector/user-blue-gradient_78370-4692.jpg?semt=ais_hybrid&w=740&q=80" class="img-fluid rounded-circle shadow" style="width:150px; height:150px; object-fit:cover;">
+                {% endif %}
+                <a href="{% url 'profile' %}" class="list-group-item list-group-item-action">
+                    Personal Info
+                </a>
+
+                <a href="{% url 'password_change' %}" class="list-group-item list-group-item-action">
+                    Password
+                </a>
+
+            </div>
+        </div>
+
+
+        <!-- RIGHT CONTENT -->
+        <div class="col-md-9">
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            {% block profile_content %}
+
+            <!-- PERSONAL INFO SECTION -->
+            <div id="personal-info" class="card mb-4 shadow-sm">
+
+                <div class="card-header">
+                    <h4 class="mb-0">Personal Information</h4>
+                </div>
+
+                <div class="card-body">
+
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            {{ form.first_name.label_tag }}
+                            {{ form.first_name }}
+                            {% for error in form.first_name.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.last_name.label_tag }}
+                            {{ form.last_name }}
+                            {% for error in form.last_name.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.phone.label_tag }}
+                            {{ form.phone }}
+                            {% for error in form.phone.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.address.label_tag }}
+                            {{ form.address }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.photo.label_tag }}
+                            {{ form.photo }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.date_of_birth.label_tag }}
+                            {{ form.date_of_birth }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.gender.label_tag }}
+                            {{ form.gender }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            Update Personal Info
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+
+            {% endblock profile_content %}
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
